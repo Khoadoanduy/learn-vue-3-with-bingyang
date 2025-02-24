@@ -1,40 +1,46 @@
 <template>
-  <h1> Meesage: {{ message }}</h1>
-  <h1>number: {{ number }}</h1> 
-  <h1 v-text="number"></h1>
-  <h1>doubleNum50: {{ doubleNum(50) }}</h1>
-  <hr />
+  <div class="card">
+    <h2>Message: {{ message }}</h2>
+    <h2>Number: {{ number }}</h2>
+    <button @click="changeMessageToUpperCase">
+      Change message to upper case
+    </button>
+    <button @click="incrementNumber">Increment number</button>
+  </div>
 
-  <h1>number: {{ number * 2 }}</h1>
-  <hr />
+  <div class="card">
+    <h2>Name: {{ wizard.name }}</h2>
+    <h2>Wand: {{ wizard.wand }}</h2>
+    <button @click="changeNameToUpperCase">Change name to upper case</button>
+    <button @click="changeWandCore">Change wand core</button>
+    <button @click="changeWizard">Change wizard</button>
 
-  <h1>
-    {{
-    number > 150 ? 'number is greater than 50' : 'number is less than 150'
-  }}
-  </h1>
+    <!-- You can also mutate a ref directly in event handlers -->
+    <button @click="wizard.wand.core = 'Unicorn hair'">Change wand core</button>
+  </div>
 
-  <h1>harry: {{ harry }}</h1>
-
-  <h1>harry.name: {{ harry.name }}</h1>
-
-  <h1>hogwartsWizards: {{ hogwartsWizards }}</h1>
-
-  <h1>hogwartsWizards[0]: {{ hogwartsWizards[0] }}</h1>
-
-  <h1>{{ rawHtml }}</h1>
-  <h1 v-text="rawHtml"></h1>
-  <h1 v-html="rawHtml"></h1>
+  <div class="card">
+    <h2>Array: {{ wizards }}</h2>
+    <button @click="wizards.push('Draco')">Add a new wizard</button>
+  </div>
 </template>
 
 <script setup>
-let message = 'Hello, Vue';
-let number = 350
+import { ref } from 'vue'
 
-function doubleNum(num) {
-  return num * 2;
+let message = ref('Hello, Reactivity!')
+let number = ref(1)
+
+function changeMessageToUpperCase() {
+  message.value = message.value.toUpperCase()
+  console.log(message.value)
 }
-let harry = {
+function incrementNumber() {
+  number.value += 1
+  console.log(number.value)
+}
+
+let wizard = ref({
   id: 1001,
   name: 'Harry Potter',
   house: 'Gryffindor',
@@ -43,19 +49,16 @@ let harry = {
     core: 'Phoenix feather',
     wood: 'Holly'
   }
+})
+
+function changeNameToUpperCase() {
+  wizard.value.name = wizard.value.name.toUpperCase()
 }
-const hogwartsWizards = [
-  {
-    id: 1001,
-    name: 'Harry Potter',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Phoenix feather',
-      wood: 'Holly'
-    }
-  },
-  {
+function changeWandCore() {
+  wizard.value.wand.core = 'Unicorn hair'
+}
+function changeWizard() {
+  wizard.value = {
     id: 1002,
     name: 'Hermione Granger',
     house: 'Gryffindor',
@@ -64,29 +67,17 @@ const hogwartsWizards = [
       core: 'Dragon heartstring',
       wood: 'Vine'
     }
-  },
-  {
-    id: 1003,
-    name: 'Ron Weasley',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Unicorn hair',
-      wood: 'Willow'
-    }
-  },
-  {
-    id: 1004,
-    name: 'Draco Malfoy',
-    house: 'Slytherin',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Hawthorn'
-    }
   }
-]
-let rawHtml = '<span style="color: red">This should be red.</span>'
+}
+
+let wizards = ref(['Harry', 'Hermione', 'Ron'])
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.card {
+  background-color: purple;
+  color: white;
+  padding: 20px 10px;
+  margin-bottom: 10px;
+}
+</style>
