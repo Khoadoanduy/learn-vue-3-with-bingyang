@@ -1,83 +1,109 @@
 <template>
-  <div class="card">
-    <h2>Message: {{ message }}</h2>
-    <h2>Number: {{ number }}</h2>
-    <button @click="changeMessageToUpperCase">
-      Change message to upper case
-    </button>
-    <button @click="incrementNumber">Increment number</button>
-  </div>
-
-  <div class="card">
-    <h2>Name: {{ wizard.name }}</h2>
-    <h2>Wand: {{ wizard.wand }}</h2>
-    <button @click="changeNameToUpperCase">Change name to upper case</button>
-    <button @click="changeWandCore">Change wand core</button>
-    <button @click="changeWizard">Change wizard</button>
-
-    <!-- You can also mutate a ref directly in event handlers -->
-    <button @click="wizard.wand.core = 'Unicorn hair'">Change wand core</button>
-  </div>
-
-  <div class="card">
-    <h2>Array: {{ wizards }}</h2>
-    <button @click="wizards.push('Draco')">Add a new wizard</button>
-  </div>
+  <h1>{{ message }}</h1>
+  <h1>Welcome, {{ formData.name }}</h1>
+  <form action="">
+    <div>
+      <span>Name:</span>
+      <span>
+        <!-- formData.name is synced after "change" event instead of "input" event. -->
+        <input type="text" v-model.lazy="formData.name" />
+      </span>
+    </div>
+    <div>
+      <span>Gender:</span>
+      <span>
+        <input type="radio" id="male" value="M" v-model="formData.gender" />
+        <label for="male">M</label>
+        <input type="radio" id="female" value="F" v-model="formData.gender" />
+        <label for="female">F</label>
+      </span>
+    </div>
+    <div>
+      <span>Age:</span>
+      <span>
+        <!-- Input is automatically typecast as a number. -->
+        <input type="text" id="age" v-model.number="formData.age" />
+      </span>
+    </div>
+    <div>
+      <span>Hobbies:</span>
+      <!-- We can bind multiple checkboxes to the same array. -->
+      <input type="checkbox" value="basketball" v-model="formData.hobbies" />
+      <label for="basketball">Basketball</label>
+      <input type="checkbox" value="football" v-model="formData.hobbies" />
+      <label for="football">Football</label>
+      <input type="checkbox" value="js" v-model="formData.hobbies" />
+      <label for="js">JavaScript</label>
+    </div>
+    <div>
+      <span>Profession:</span>
+      <select v-model="formData.profession">
+        <option value="">Please select one</option>
+        <option value="1">Software Engineer</option>
+        <option value="2">Data Scientist</option>
+        <option value="3">Product Manager</option>
+        <option value="4">Professor</option>
+      </select>
+    </div>
+    <div>
+      <span>Description:</span>
+      <!-- Leading and trailing whitespace is removed automatically. -->
+      <textarea
+        v-model.trim="formData.desc"
+        @keyup.enter="submitForm"
+      ></textarea>
+    </div>
+    <div>
+      <input type="reset" value="Reset" @click="resetForm" />
+      <!-- Prevent the form from submitting through form action. -->
+      <input type="submit" value="Submit" @click.prevent="submitForm" />
+    </div>
+  </form>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-let message = ref('Hello, Reactivity!')
-let number = ref(1)
+let message = ref('Hello, v-model!')
 
-function changeMessageToUpperCase() {
-  message.value = message.value.toUpperCase()
-  console.log(message.value)
-}
-function incrementNumber() {
-  number.value += 1
-  console.log(number.value)
-}
-
-let wizard = ref({
-  id: 1001,
-  name: 'Harry Potter',
-  house: 'Gryffindor',
-  age: 17, // Age during the final battle of Hogwarts
-  wand: {
-    core: 'Phoenix feather',
-    wood: 'Holly'
-  }
+let formData = ref({
+  name: '',
+  gender: '',
+  age: '',
+  hobbies: [],
+  profession: '',
+  desc: ''
 })
 
-function changeNameToUpperCase() {
-  wizard.value.name = wizard.value.name.toUpperCase()
-}
-function changeWandCore() {
-  wizard.value.wand.core = 'Unicorn hair'
-}
-function changeWizard() {
-  wizard.value = {
-    id: 1002,
-    name: 'Hermione Granger',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Vine'
-    }
+function resetForm() {
+  formData.value = {
+    name: '',
+    gender: '',
+    age: '',
+    hobbies: [],
+    profession: '',
+    desc: ''
   }
 }
 
-let wizards = ref(['Harry', 'Hermione', 'Ron'])
+function submitForm() {
+  console.log(JSON.stringify(formData.value))
+  // We can use axios or fetch() to submit data to the back end.
+}
 </script>
 
 <style scoped>
-.card {
-  background-color: purple;
-  color: white;
-  padding: 20px 10px;
-  margin-bottom: 10px;
+form {
+  padding: 20px;
+}
+
+form div {
+  height: 40px;
+  line-height: 40px;
+}
+
+form div span {
+  display: inline-block;
+  width: 100px;
 }
 </style>
